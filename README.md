@@ -121,8 +121,10 @@ Interactive API docs (Swagger): <http://localhost:3000/docs>
   ops XGBoost emits; `tract`'s support is partial.
 - **SHAP as a sidecar.** There is no production-grade SHAP in Rust, so a thin
   Python service reuses the *exact* XGBoost model — explanations stay faithful.
-- **Prisma + pnpm in the gateway.** Type-safe data access with a declarative
-  schema and migrations; pnpm for fast, disk-efficient installs.
+- **Prisma 7 + pnpm in the gateway.** Type-safe data access with a declarative
+  schema; Prisma 7's `prisma-client` generator emits a CommonJS client (so
+  NestJS stays on CommonJS) and connects through the `pg` driver adapter. pnpm
+  for fast, disk-efficient installs.
 - **Graceful degradation.** If the SHAP sidecar is down, the gateway still
   returns the decision (without reasons) rather than failing the request.
 

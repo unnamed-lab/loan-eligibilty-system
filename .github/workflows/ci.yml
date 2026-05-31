@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  gateway:
+    name: API gateway (build + unit tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api-gateway
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: api-gateway/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile=false
+      - name: Generate Prisma client
+        run: pnpm prisma generate
+        env:
+          # generate loads prisma.config.ts (needs the var); it does not connect.
+          DATABASE_URL: postgresql://placeholder:placeholder@localhost:5432/placeholder?schema=public
+      - run: pnpm run build
+      - run: pnpm test
+
+  ml:
+    name: ML pipeline (contract tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ml
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - run: pytest -q
+
+  inference-engine:
+    name: Inference engine (Docker build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the Rust engine image
+        run: docker build -t loan-inference-engine ./inference-engine

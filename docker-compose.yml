@@ -38,6 +38,10 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      inference-engine:
+        condition: service_healthy
+      shap-service:
+        condition: service_started
     environment:
       PORT: 3000
       JWT_SECRET: change-me-in-production
