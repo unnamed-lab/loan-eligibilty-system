@@ -1,0 +1,24 @@
+{
+  "version": "1.0.0",
+  "description": "Single source of truth for feature order and encoding. Consumed by ml/ (Python), inference-engine/ (Rust), and api-gateway/ (NestJS). DO NOT reorder — the ONNX model expects exactly this column sequence.",
+  "target": { "name": "Loan_Status", "encoding": { "N": 0, "Y": 1 } },
+  "features": [
+    { "name": "Gender",            "type": "categorical", "index": 0,  "encoding": { "Male": 1, "Female": 0 } },
+    { "name": "Married",           "type": "categorical", "index": 1,  "encoding": { "No": 0, "Yes": 1 } },
+    { "name": "Dependents",        "type": "ordinal",     "index": 2,  "encoding": { "0": 0, "1": 1, "2": 2, "3+": 4 } },
+    { "name": "Education",         "type": "categorical", "index": 3,  "encoding": { "Graduate": 0, "Not Graduate": 1 } },
+    { "name": "Self_Employed",     "type": "categorical", "index": 4,  "encoding": { "No": 0, "Yes": 1 } },
+    { "name": "ApplicantIncome",   "type": "continuous",  "index": 5,  "min": 0,   "max": 100000 },
+    { "name": "CoapplicantIncome", "type": "continuous",  "index": 6,  "min": 0,   "max": 100000 },
+    { "name": "LoanAmount",        "type": "continuous",  "index": 7,  "min": 0,   "max": 1000 },
+    { "name": "Loan_Amount_Term",  "type": "continuous",  "index": 8,  "min": 0,   "max": 600 },
+    { "name": "Credit_History",    "type": "categorical", "index": 9,  "encoding": { "0": 0, "1": 1 } },
+    { "name": "Property_Area",     "type": "categorical", "index": 10, "encoding": { "Rural": 0, "Semiurban": 1, "Urban": 2 } }
+  ],
+  "imputation": {
+    "categorical_strategy": "most_frequent",
+    "continuous_strategy": "median",
+    "categorical": ["Gender", "Married", "Self_Employed", "Credit_History"],
+    "continuous": ["LoanAmount", "Loan_Amount_Term"]
+  }
+}
