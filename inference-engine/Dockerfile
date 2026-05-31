@@ -1,4 +1,6 @@
-FROM rust:1.82 AS builder
+# Rust 1.90: some transitive deps (e.g. idna_adapter) require edition 2024,
+# which Cargo only supports from 1.85 onward.
+FROM rust:1.90 AS builder
 WORKDIR /app
 # Cargo.lock is committed and copied so the build uses the pinned, known-good
 # dependency set (ort 2.0.0-rc.9 + ort-sys rc.9 + ureq 2.x). Without it, Cargo

@@ -1,4 +1,4 @@
-FROM node:20-slim AS builder
+FROM node:22-slim AS builder
 WORKDIR /app
 RUN corepack enable \
     && apt-get update && apt-get install -y --no-install-recommends openssl \
@@ -15,7 +15,7 @@ COPY tsconfig.json nest-cli.json ./
 COPY src ./src
 RUN pnpm run build                  # compiles src (incl. generated client) -> dist
 
-FROM node:20-slim
+FROM node:22-slim
 WORKDIR /app
 RUN corepack enable \
     && apt-get update && apt-get install -y --no-install-recommends openssl \
