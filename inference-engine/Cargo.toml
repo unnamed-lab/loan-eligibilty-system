@@ -1,0 +1,23 @@
+[package]
+name = "inference-engine"
+version = "1.0.0"
+edition = "2021"
+description = "High-performance ONNX inference engine for loan eligibility prediction"
+
+[dependencies]
+axum = "0.7"
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# ONNX Runtime bindings. Full support for ai.onnx.ml TreeEnsemble ops (XGBoost).
+# `tract` only partially supports these ops, hence `ort` here.
+# Pinned exactly: the inputs!/from_array API changed in later rc builds.
+ort = { version = "=2.0.0-rc.9", features = ["download-binaries"] }
+ndarray = "0.16"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+anyhow = "1"
+
+[profile.release]
+opt-level = 3
+lto = true
