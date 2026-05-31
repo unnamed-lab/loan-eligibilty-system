@@ -1,0 +1,53 @@
+// Prisma 7 schema — the gateway's data model.
+// Apply to the database with `pnpm prisma db push` (or `migrate deploy` in prod).
+// The connection URL lives in prisma.config.ts (Prisma 7 convention).
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  runtime      = "nodejs"
+  moduleFormat = "cjs" // NestJS runs on CommonJS
+}
+
+datasource db {
+  provider = "postgresql"
+  // URL is configured in prisma.config.ts
+}
+
+/// Loan officers / admins who authenticate against the API.
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  role         String   @default("officer") // officer | admin
+  createdAt    DateTime @default(now())
+
+  @@map("users")
+}
+
+/// Applicant records (the "Manage Applicant Records" use case).
+model Applicant {
+  id        String   @id @default(uuid())
+  fullName  String
+  phone     String?
+  profile   Json? // last submitted application snapshot
+  createdAt DateTime @default(now())
+
+  @@map("applicants")
+}
+
+/// Audit log — one row per decision (PostgreSQL-backed audit logging).
+model PredictionLog {
+  id                 String   @id @default(uuid())
+  input              Json // raw applicant payload
+  featureVector      Float[] // the encoded 11-float vector sent to the engine
+  eligible           Boolean
+  probability        Float
+  reasons            Json? // SHAP top reasons (may be empty if sidecar was down)
+  requestedBy        String? // user id from the JWT
+  modelVersion       String   @default("xgboost-onnx-1.0.0")
+  inferenceLatencyMs Float?
+  createdAt          DateTime @default(now())
+
+  @@map("prediction_logs")
+}
