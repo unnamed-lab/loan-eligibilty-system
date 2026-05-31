@@ -1,0 +1,20 @@
+# Core data + modelling
+numpy
+pandas
+scikit-learn
+xgboost
+imbalanced-learn
+
+# ONNX export + validation
+skl2onnx
+onnxmltools
+onnxconverter-common
+onnxruntime
+
+# Evaluation plots + explainability
+matplotlib
+seaborn
+shap
+
+# Tests
+pytest

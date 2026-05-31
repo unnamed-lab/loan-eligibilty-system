@@ -1,0 +1,32 @@
+{
+  "Logistic Regression": {
+    "accuracy_mean": 0.7505873340143003,
+    "accuracy_std": 0.05784003251366078,
+    "f1_weighted_mean": 0.7398803568402802,
+    "roc_auc_mean": 0.6825415335198518
+  },
+  "SVM": {
+    "accuracy_mean": 0.7845505617977528,
+    "accuracy_std": 0.04832878997203589,
+    "f1_weighted_mean": 0.7623613378109718,
+    "roc_auc_mean": 0.6441531410595399
+  },
+  "Random Forest": {
+    "accuracy_mean": 0.7709397344228804,
+    "accuracy_std": 0.024556405171680243,
+    "f1_weighted_mean": 0.7609446730372955,
+    "roc_auc_mean": 0.7329972459136922
+  },
+  "XGBoost": {
+    "accuracy_mean": 0.7505873340143003,
+    "accuracy_std": 0.009557046080059264,
+    "f1_weighted_mean": 0.7425637195128715,
+    "roc_auc_mean": 0.7247339700274656
+  },
+  "Ensemble (SVM+XGB)": {
+    "accuracy_mean": 0.7732635342185905,
+    "accuracy_std": 0.02569922465149006,
+    "f1_weighted_mean": 0.758362468009214,
+    "roc_auc_mean": 0.7071984403555002
+  }
+}

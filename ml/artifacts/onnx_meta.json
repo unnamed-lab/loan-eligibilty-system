@@ -1,0 +1,22 @@
+{
+  "feature_order": [
+    "Gender",
+    "Married",
+    "Dependents",
+    "Education",
+    "Self_Employed",
+    "ApplicantIncome",
+    "CoapplicantIncome",
+    "LoanAmount",
+    "Loan_Amount_Term",
+    "Credit_History",
+    "Property_Area"
+  ],
+  "n_features": 11,
+  "parity_rows_matched": 30,
+  "input_name": "input",
+  "output_names": [
+    "label",
+    "probabilities"
+  ]
+}
