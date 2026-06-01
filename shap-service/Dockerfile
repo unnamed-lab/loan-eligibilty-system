@@ -3,7 +3,8 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# --retries/--timeout add resilience on flaky networks.
+RUN pip install --no-cache-dir --retries 10 --timeout 120 -r requirements.txt
 COPY app.py .
 COPY artifacts ./artifacts
 # The feature contract is mounted at /shared at runtime (see docker-compose);

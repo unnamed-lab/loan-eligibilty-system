@@ -3,7 +3,7 @@ WORKDIR /app
 RUN corepack enable \
     && apt-get update && apt-get install -y --no-install-recommends openssl \
     && rm -rf /var/lib/apt/lists/*
-COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml ./
+COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml .npmrc ./
 RUN pnpm install --frozen-lockfile=false
 COPY prisma.config.ts ./
 COPY prisma ./prisma
@@ -20,7 +20,7 @@ WORKDIR /app
 RUN corepack enable \
     && apt-get update && apt-get install -y --no-install-recommends openssl \
     && rm -rf /var/lib/apt/lists/*
-COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml ./
+COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml .npmrc ./
 RUN pnpm install --prod --frozen-lockfile=false
 COPY prisma.config.ts ./
 COPY prisma ./prisma
