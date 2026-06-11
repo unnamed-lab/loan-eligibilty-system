@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CSBank Underwrite Web Client
 
-## Getting Started
+A modern, responsive Next.js frontend client for the **CSBank Loan Underwriting Decision System**. 
 
-First, run the development server:
+This portal enables loan officers to assess loan eligibility, inspect feature importance using SHAP explainability reasons, and audit past underwriting decisions.
+
+---
+
+## 🎨 Design & Tech Stack
+
+* **Framework**: Next.js (App Router, TypeScript)
+* **Styling**: Tailwind CSS
+* **Icons**: `lucide-react`
+* **Features**:
+  * **Branded Interface**: Custom slate dark theme with emerald glow effects.
+  * **Modular Navigation**: Common authenticated `Navbar` component with links to Calculator and Audits.
+  * **Interactive Calculator**: Real-time validation and submission of applicant data.
+  * **Decision Audit Log**: Review historical predictions, eligibility, and confidence scores.
+  * **SHAP Explainability View**: Visual highlights of features that increased or decreased approval probability.
+
+---
+
+## ⚙️ Getting Started
+
+### 1. Installation
+
+Install dependencies using `pnpm`. On Windows systems, bypass compilation failures for native packages by utilizing `--ignore-scripts`:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install --ignore-scripts
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Run the Development Server
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Start the local server on port `4000` to avoid conflicts:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+pnpm dev --port 4000
+```
 
-## Learn More
+Open [http://127.0.0.1:4000](http://127.0.0.1:4000) in your browser.
 
-To learn more about Next.js, take a look at the following resources:
+### 3. Register a Loan Officer Account
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Because the database contains **no pre-seeded credentials**, navigate to **Sign Up** first to register a new user account.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📁 Directory Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+web-client/
+├── src/
+│   ├── app/
+│   │   ├── history/            # Audit history logs view
+│   │   │   ├── [id]/           # Individual log inspection (SHAP explanations)
+│   │   │   └── page.tsx        
+│   │   ├── login/              # Sign In screen
+│   │   ├── register/           # Account registration screen
+│   │   ├── page.tsx            # Loan Eligibility Calculator (Home)
+│   │   ├── layout.tsx          
+│   │   └── globals.css         
+│   ├── components/
+│   │   └── Navbar.tsx          # Authenticated common header
+│   └── utils/
+│       └── api.ts              # API fetch wrappers and session handling
+```

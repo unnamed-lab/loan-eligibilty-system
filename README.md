@@ -29,6 +29,7 @@ feature contract and an ONNX model file):
 | Explainability | Python (FastAPI + SHAP) | [`shap-service/`](shap-service/) | 8000 | Per-decision "reasons" |
 | API gateway | NestJS (Prisma + JWT) | [`api-gateway/`](api-gateway/) | 3000 | Auth, validation, orchestration, audit |
 | Database | PostgreSQL | (docker) | 5432 | Users, applicants, audit log |
+| Web Client | Next.js (TypeScript + Tailwind CSS) | [`web-client/`](web-client/) | 4000 | Modular UI testing portal (CSBank Underwrite) |
 
 The **single source of truth** for feature order/encoding is
 [`shared/feature-contract.json`](shared/feature-contract.json), read by all three
@@ -43,6 +44,7 @@ loan-eligibility-system/
 ├── inference-engine/              # Rust: loads model.onnx, serves /predict
 ├── shap-service/                  # Python FastAPI: SHAP TreeExplainer sidecar
 ├── api-gateway/                   # NestJS + Prisma: public REST API + audit log
+├── web-client/                    # Next.js: modular testing UI (CSBank Underwrite)
 ├── docker-compose.yml             # one-command bring-up of the whole system
 └── Makefile                       # train / export / up / down helpers
 ```
@@ -60,7 +62,19 @@ docker compose up --build
 This starts PostgreSQL, the Rust engine, the SHAP sidecar, and the gateway.
 Only the gateway (`:3000`) is exposed publicly.
 
-### Option B — train the model yourself first
+### Option B — Run the Web Client (CSBank Underwrite UI)
+
+To run the Next.js frontend testing client:
+
+```bash
+cd web-client
+pnpm install --ignore-scripts  # Bypasses native module build issues on Windows
+pnpm dev --port 4000
+```
+
+Open [http://127.0.0.1:4000](http://127.0.0.1:4000) in your browser. Since there are **no pre-seeded credentials** in the database, go to the **Sign Up** page first to register a new account, which will automatically sign you in.
+
+### Option C — train the model yourself first
 
 ```bash
 cd ml
@@ -136,6 +150,7 @@ Each service has its own README:
 - [inference-engine/README.md](inference-engine/README.md) — Rust engine
 - [shap-service/README.md](shap-service/README.md) — SHAP sidecar
 - [api-gateway/README.md](api-gateway/README.md) — NestJS gateway
+- [web-client/README.md](web-client/README.md) — Next.js web client UI
 
 ## License
 
