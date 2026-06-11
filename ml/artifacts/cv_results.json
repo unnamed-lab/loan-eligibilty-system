@@ -1,32 +1,32 @@
 {
   "Logistic Regression": {
-    "accuracy_mean": 0.7505873340143003,
-    "accuracy_std": 0.05784003251366078,
-    "f1_weighted_mean": 0.7398803568402802,
-    "roc_auc_mean": 0.6825415335198518
+    "accuracy_mean": 0.7371828269169584,
+    "accuracy_std": 0.02747989022929755,
+    "f1_weighted_mean": 0.7372648232938537,
+    "roc_auc_mean": 0.761792786235867
   },
   "SVM": {
-    "accuracy_mean": 0.7845505617977528,
-    "accuracy_std": 0.04832878997203589,
-    "f1_weighted_mean": 0.7623613378109718,
-    "roc_auc_mean": 0.6441531410595399
+    "accuracy_mean": 0.7327503579382755,
+    "accuracy_std": 0.07189061271175658,
+    "f1_weighted_mean": 0.7275637106515437,
+    "roc_auc_mean": 0.7537721853876652
   },
   "Random Forest": {
-    "accuracy_mean": 0.7709397344228804,
-    "accuracy_std": 0.024556405171680243,
-    "f1_weighted_mean": 0.7609446730372955,
-    "roc_auc_mean": 0.7329972459136922
+    "accuracy_mean": 0.9665357540566338,
+    "accuracy_std": 0.0037030370300234748,
+    "f1_weighted_mean": 0.9664725257373032,
+    "roc_auc_mean": 0.9908295830795145
   },
   "XGBoost": {
-    "accuracy_mean": 0.7505873340143003,
-    "accuracy_std": 0.009557046080059264,
-    "f1_weighted_mean": 0.7425637195128715,
-    "roc_auc_mean": 0.7247339700274656
+    "accuracy_mean": 0.9254842109449571,
+    "accuracy_std": 0.010863319463142175,
+    "f1_weighted_mean": 0.925238166535413,
+    "roc_auc_mean": 0.9697448825005942
   },
   "Ensemble (SVM+XGB)": {
-    "accuracy_mean": 0.7732635342185905,
-    "accuracy_std": 0.02569922465149006,
-    "f1_weighted_mean": 0.758362468009214,
-    "roc_auc_mean": 0.7071984403555002
+    "accuracy_mean": 0.8987153993000317,
+    "accuracy_std": 0.020527466094254796,
+    "f1_weighted_mean": 0.8985175090891133,
+    "roc_auc_mean": 0.9530405256369731
   }
 }
