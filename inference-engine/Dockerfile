@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1
 # Rust 1.90: some transitive deps (e.g. idna_adapter) require edition 2024,
 # which Cargo only supports from 1.85 onward.
 FROM rust:1.90 AS builder
