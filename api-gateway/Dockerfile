@@ -16,7 +16,7 @@ COPY api-gateway/prisma ./prisma
 # generate loads prisma.config.ts, which requires DATABASE_URL to resolve
 # (it does not connect — a placeholder is fine; the real URL is set at runtime).
 ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder?schema=public"
-RUN pnpm prisma generate            # emits generated/prisma (CJS client)
+RUN pnpm prisma generate            # emits node_modules/@prisma/client (CJS client)
 COPY api-gateway/tsconfig.json api-gateway/nest-cli.json ./
 COPY api-gateway/src ./src
 RUN pnpm run build                  # compiles src -> dist
@@ -31,7 +31,7 @@ RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
     pnpm install --prod --store-dir=/pnpm/store --frozen-lockfile=false
 COPY api-gateway/prisma.config.ts ./
 COPY api-gateway/prisma ./prisma
-COPY --from=builder /app/generated ./generated
+COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/client
 COPY --from=builder /app/dist ./dist
 # src/common/feature-contract.ts reads this at import time, so a wrong path
 # crashes the process at boot rather than on first request.
