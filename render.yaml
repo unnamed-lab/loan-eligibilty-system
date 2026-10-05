@@ -109,5 +109,5 @@ databases:
     # Matches docker-compose (postgres:15-alpine) so local and hosted schemas
     # agree. Can't be changed after creation.
     postgresMajorVersion: "15"
-    plan: starter
+    plan: free
     region: oregon
