@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { clearAuthToken } from '../utils/api';
-import { Sparkles, Calculator, History, LogOut } from 'lucide-react';
+import { Sparkles, Calculator, History, LogOut, Landmark } from 'lucide-react';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -13,15 +13,13 @@ export default function Navbar() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // Decode JWT token loosely or read stored user details from localStorage
       const token = localStorage.getItem('loan_officer_token');
       if (token) {
         try {
-          // JWT payload is in the second part
           const payload = JSON.parse(atob(token.split('.')[1]));
           setEmail(payload.email);
         } catch {
-          setEmail('loan-officer');
+          setEmail('officer@csbank.ng');
         }
       }
     }
@@ -33,14 +31,22 @@ export default function Navbar() {
   };
 
   return (
-    <header className="border-b border-slate-900 bg-slate-900/30 backdrop-blur-md sticky top-0 z-30">
+    <header className="border-b border-slate-900 bg-slate-900/30 backdrop-blur-md sticky top-0 z-30 font-sans">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-3">
-            <div className="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20 animate-pulse">
-              <Sparkles className="w-5 h-5" />
+            <div className="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20 shadow-sm">
+              <Landmark className="w-5 h-5 text-emerald-400" />
             </div>
-            <span className="font-bold text-lg tracking-tight text-white">CSBank Underwrite</span>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1.5">
+                <span className="font-bold text-base tracking-tight text-white">CSBank Nigeria</span>
+                <span className="px-1.5 py-0.2 rounded text-[9px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">
+                  CBN Lic.
+                </span>
+              </div>
+              <span className="text-[10px] text-slate-400">Credit Risk & Underwriting Portal</span>
+            </div>
           </Link>
 
           {/* Navigation Links */}
@@ -54,7 +60,7 @@ export default function Navbar() {
               }`}
             >
               <Calculator className="w-3.5 h-3.5" />
-              <span>Calculator</span>
+              <span>NGN Calculator</span>
             </Link>
 
             <Link
@@ -73,8 +79,8 @@ export default function Navbar() {
 
         <div className="flex items-center gap-4">
           <div className="text-right">
-            <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Active Officer</p>
-            <p className="text-xs font-medium text-slate-300">{email || 'loan-officer'}</p>
+            <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Underwriter Officer</p>
+            <p className="text-xs font-mono font-medium text-slate-300">{email || 'officer@csbank.ng'}</p>
           </div>
           <button
             onClick={handleLogout}
@@ -88,3 +94,4 @@ export default function Navbar() {
     </header>
   );
 }
+
