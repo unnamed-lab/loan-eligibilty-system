@@ -36,10 +36,6 @@ services:
     dockerContext: ./
     plan: free
     region: oregon
-    # The image's CMD hardcodes `--port 8000`, which would never match the port
-    # Render assigns, so the health check would fail forever. The explicit
-    # `sh -c` is what makes $PORT expand inside the container.
-    dockerCommand: sh -c "exec uvicorn app:app --host 0.0.0.0 --port ${PORT:-8000}"
     healthCheckPath: /health
     buildFilter:
       paths:
