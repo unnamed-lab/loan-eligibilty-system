@@ -58,12 +58,6 @@ services:
     dockerContext: ./
     plan: free
     region: oregon
-    # Migrations belong in a preDeployCommand, not in the start command, so that
-    # scaling out never runs concurrent `db push` calls. This also drops the
-    # image's `prisma db push && node dist/main`, which would re-push the schema
-    # on every boot and slow every restart.
-    preDeployCommand: pnpm prisma db push
-    dockerCommand: node dist/main
     # There is no /health route. Swagger UI is public and only responds once the
     # whole Nest module graph has booted, PrismaService.$connect included — so a
     # 200 here means the service is genuinely ready to serve.
