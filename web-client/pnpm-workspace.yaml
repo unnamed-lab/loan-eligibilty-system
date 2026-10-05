@@ -1,6 +1,7 @@
+# Both native deps ship prebuilt platform bindings as optional dependencies, so
+# their install scripts stay skipped, as they always have. Declaring them
+# explicitly replaces a placeholder value that made `pnpm install` exit 1 with
+# ERR_PNPM_IGNORED_BUILDS, which fails CI and the Render build.
 allowBuilds:
-  sharp: set this to true or false
-  unrs-resolver: set this to true or false
-ignoredBuiltDependencies:
-  - sharp
-  - unrs-resolver
+  sharp: false
+  unrs-resolver: false

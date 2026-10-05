@@ -1,0 +1,21 @@
+# Build contexts for api-gateway and shap-service are the REPO ROOT, because both
+# images bake in shared/feature-contract.json. Docker only reads the .dockerignore
+# at the context root, so this file governs those builds. Keep the allow-list of
+# inputs below in sync with each service's COPY lines.
+.git
+.github
+**/node_modules
+**/dist
+**/target
+**/.venv
+**/__pycache__
+**/*.pyc
+**/coverage
+.env
+.env.local
+npm-debug.log
+
+# Training inputs and evaluation output; the deployed images only need the
+# exported artifacts that inference-engine/ and shap-service/ already carry.
+ml/data
+ml/artifacts/plots

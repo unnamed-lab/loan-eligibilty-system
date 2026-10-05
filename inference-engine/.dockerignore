@@ -1,0 +1,5 @@
+# This service builds from its own directory as the context, so it needs a
+# separate ignore file: Docker only reads the .dockerignore at the context root.
+target
+Dockerfile
+.dockerignore

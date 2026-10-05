@@ -88,6 +88,20 @@ python export_onnx.py  # model.onnx + parity check (expect 30/30)
 
 Then run **Option A** to serve it.
 
+### Option D — Deploying to Render with `render.yaml`
+
+This repository includes a Render Blueprint (`render.yaml`) that provisions all 5 services automatically:
+
+1. Connect your GitHub repository on [Render](https://render.com/).
+2. Click **New +** → **Blueprint**.
+3. Select your repository. Render will automatically detect `render.yaml` and configure:
+   - `loan-db`: Managed PostgreSQL database (v15)
+   - `loan-inference-engine`: Rust ONNX inference service
+   - `loan-shap-service`: Python FastAPI SHAP explainability sidecar
+   - `loan-api-gateway`: NestJS API Gateway with Prisma DB migration
+   - `loan-web-client`: Next.js web testing client
+4. Click **Apply**. Render will build and deploy all services.
+
 ## Using the API
 
 ```bash

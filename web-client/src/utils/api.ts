@@ -1,4 +1,6 @@
-const API_BASE = 'http://127.0.0.1:3000';
+// NEXT_PUBLIC_ is inlined at build time, so this must be set during `next build`
+// — a value added at runtime would not reach the browser bundle.
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://127.0.0.1:3000';
 
 export function getAuthToken(): string | null {
   if (typeof window !== 'undefined') {

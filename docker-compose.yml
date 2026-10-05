@@ -28,7 +28,8 @@ services:
       retries: 5
 
   shap-service:
-    build: ./shap-service
+    # Repo-root context: the image bakes in shared/feature-contract.json.
+    build: { context: ., dockerfile: shap-service/Dockerfile }
     volumes:
       - ./shared:/shared:ro
     environment:
@@ -36,7 +37,8 @@ services:
     ports: ["8000:8000"]
 
   api-gateway:
-    build: ./api-gateway
+    # Repo-root context: the image bakes in shared/feature-contract.json.
+    build: { context: ., dockerfile: api-gateway/Dockerfile }
     depends_on:
       postgres:
         condition: service_healthy

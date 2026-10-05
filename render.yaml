@@ -1,0 +1,122 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+#
+# Apply with: New > Blueprint > pick this repo. Render reads this file, creates
+# every resource below, then builds each service in parallel.
+#
+# Deployment order matters even though Render builds in parallel: api-gateway's
+# preDeployCommand (`prisma db push`) needs loan-db to exist and to be reachable,
+# and its first predict() call needs the engine and SHAP sidecar. All five
+# resources are pinned to `region: oregon` so they share a region.
+
+services:
+  # Rust + ONNX Runtime. Loads models/model.onnx at startup, then serves
+  # POST /predict. Build context is its own directory (see its .dockerignore).
+  - type: web
+    name: loan-inference-engine
+    runtime: docker
+    dockerfilePath: ./inference-engine/Dockerfile
+    dockerContext: ./inference-engine
+    plan: free
+    region: oregon
+    healthCheckPath: /health
+    buildFilter:
+      paths:
+        - inference-engine/**
+    envVars:
+      # Baked into the image by `COPY models ./models`; restated so the
+      # artifact path is visible from the dashboard.
+      - key: MODEL_PATH
+        value: /app/models/model.onnx
+
+  # FastAPI + XGBoost/SHAP sidecar. Produces the top-3 reasons for a decision.
+  - type: web
+    name: loan-shap-service
+    runtime: docker
+    dockerfilePath: ./shap-service/Dockerfile
+    dockerContext: ./
+    plan: free
+    region: oregon
+    # The image's CMD hardcodes `--port 8000`, which would never match the port
+    # Render assigns, so the health check would fail forever. The explicit
+    # `sh -c` is what makes $PORT expand inside the container.
+    dockerCommand: sh -c "exec uvicorn app:app --host 0.0.0.0 --port ${PORT:-8000}"
+    healthCheckPath: /health
+    buildFilter:
+      paths:
+        - shap-service/**
+        # The contract is baked in, so changes to it must rebuild this image.
+        - shared/**
+    envVars:
+      - key: FEATURE_CONTRACT_PATH
+        value: /shared/feature-contract.json
+
+  # NestJS gateway: auth, validation, orchestration, audit logging.
+  - type: web
+    name: loan-api-gateway
+    runtime: docker
+    dockerfilePath: ./api-gateway/Dockerfile
+    dockerContext: ./
+    plan: free
+    region: oregon
+    # Migrations belong in a preDeployCommand, not in the start command, so that
+    # scaling out never runs concurrent `db push` calls. This also drops the
+    # image's `prisma db push && node dist/main`, which would re-push the schema
+    # on every boot and slow every restart.
+    preDeployCommand: pnpm prisma db push
+    dockerCommand: node dist/main
+    # There is no /health route. Swagger UI is public and only responds once the
+    # whole Nest module graph has booted, PrismaService.$connect included — so a
+    # 200 here means the service is genuinely ready to serve.
+    healthCheckPath: /docs
+    buildFilter:
+      paths:
+        - api-gateway/**
+        - shared/**
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: loan-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 3600s
+      - key: FEATURE_CONTRACT_PATH
+        value: /shared/feature-contract.json
+      # Render does not interpolate variables in Blueprint files, and
+      # PredictionService appends "/predict" to these values, so each needs a
+      # full scheme + host. That forces the gateway onto the public internet
+      # rather than Render's private network — see README for the tradeoff.
+      - key: INFERENCE_URL
+        value: https://loan-inference-engine.onrender.com
+      - key: SHAP_URL
+        value: https://loan-shap-service.onrender.com
+
+  # Next.js 16 operator UI. No Dockerfile in the repo, so this is a native Node
+  # service with rootDir set to web-client.
+  - type: web
+    name: loan-web-client
+    runtime: node
+    rootDir: web-client
+    plan: free
+    region: oregon
+    buildCommand: npm install -g pnpm@11 && pnpm install --frozen-lockfile && pnpm build
+    startCommand: pnpm start
+    buildFilter:
+      paths:
+        - web-client/**
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # Read at BUILD time: NEXT_PUBLIC_ values are inlined into the browser
+      # bundle by next build, so this must be set here rather than at runtime.
+      - key: NEXT_PUBLIC_API_URL
+        value: https://loan-api-gateway.onrender.com
+
+databases:
+  - name: loan-db
+    # Matches docker-compose (postgres:15-alpine) so local and hosted schemas
+    # agree. Can't be changed after creation.
+    postgresMajorVersion: "15"
+    plan: free
+    region: oregon
