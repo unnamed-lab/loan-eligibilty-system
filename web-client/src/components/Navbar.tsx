@@ -4,13 +4,14 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { clearAuthToken } from '../utils/api';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { 
   BankIcon, 
   Calculator01Icon, 
   Time01Icon, 
   Logout01Icon,
   Shield01Icon
-} from 'hugeicons-react';
+} from '@hugeicons/core-free-icons';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -42,7 +43,7 @@ export default function Navbar() {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-3.5 group">
             <div className="p-2.5 bg-gradient-to-br from-emerald-500/15 to-emerald-600/5 text-emerald-400 rounded-xl border border-emerald-500/20 shadow-inner group-hover:border-emerald-500/40 transition-colors">
-              <BankIcon className="w-5 h-5 text-emerald-400" />
+              <HugeiconsIcon icon={BankIcon} className="w-5 h-5 text-emerald-400" />
             </div>
             <div className="flex flex-col">
               <div className="flex items-center gap-2">
@@ -50,7 +51,7 @@ export default function Navbar() {
                   CSBank Nigeria
                 </span>
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold tracking-wider">
-                  <Shield01Icon className="w-2.5 h-2.5" />
+                  <HugeiconsIcon icon={Shield01Icon} className="w-2.5 h-2.5" />
                   CBN LICENSED
                 </span>
               </div>
@@ -68,7 +69,7 @@ export default function Navbar() {
                   : 'text-slate-400 hover:text-slate-100 bg-transparent border-transparent hover:bg-slate-900/60'
               }`}
             >
-              <Calculator01Icon className="w-4 h-4" />
+              <HugeiconsIcon icon={Calculator01Icon} className="w-4 h-4" />
               <span>NGN Calculator</span>
             </Link>
 
@@ -80,7 +81,7 @@ export default function Navbar() {
                   : 'text-slate-400 hover:text-slate-100 bg-transparent border-transparent hover:bg-slate-900/60'
               }`}
             >
-              <Time01Icon className="w-4 h-4" />
+              <HugeiconsIcon icon={Time01Icon} className="w-4 h-4" />
               <span>Audit History</span>
             </Link>
           </nav>
@@ -96,12 +97,10 @@ export default function Navbar() {
             className="p-2.5 hover:bg-slate-900 rounded-xl text-slate-400 hover:text-rose-400 transition-all border border-slate-800/50 hover:border-rose-500/20"
             title="Sign Out"
           >
-            <Logout01Icon className="w-4 h-4" />
+            <HugeiconsIcon icon={Logout01Icon} className="w-4 h-4" />
           </button>
         </div>
       </div>
     </header>
   );
 }
-
-

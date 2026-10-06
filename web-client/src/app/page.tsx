@@ -5,11 +5,11 @@ import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { api, getAuthToken } from '../utils/api';
 import Navbar from '../components/Navbar';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { 
   CheckmarkCircle02Icon, 
   Cancel01Icon, 
   InformationCircleIcon, 
-  Calculator01Icon, 
   Shield01Icon, 
   Building02Icon, 
   PercentIcon, 
@@ -19,13 +19,11 @@ import {
   BankIcon,
   ArrowUp02Icon, 
   ArrowDown02Icon,
-  UserIcon,
-  UserGroupIcon,
   Loading02Icon,
   RefreshIcon,
   Coins01Icon,
   AnalyticsUpIcon
-} from 'hugeicons-react';
+} from '@hugeicons/core-free-icons';
 
 const NIGERIAN_STATES = [
   // Major Urban Centers
@@ -101,7 +99,7 @@ const DEFAULT_FORM = {
 function FieldTooltip({ text }: { text: string }) {
   return (
     <span className="relative inline-block group ml-1 align-middle">
-      <InformationCircleIcon className="w-3.5 h-3.5 text-slate-400 hover:text-emerald-400 cursor-pointer transition-colors" />
+      <HugeiconsIcon icon={InformationCircleIcon} className="w-3.5 h-3.5 text-slate-400 hover:text-emerald-400 cursor-pointer transition-colors" />
       <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block group-focus-within:block w-64 p-2.5 bg-slate-900 border border-slate-700/80 text-[11px] text-slate-200 rounded-xl shadow-2xl z-50 leading-snug font-normal text-left normal-case tracking-normal">
         {text}
         <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-700"></span>
@@ -227,7 +225,7 @@ export default function Home() {
   if (!authChecked) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <Loading02Icon className="w-8 h-8 animate-spin text-emerald-500" />
+        <HugeiconsIcon icon={Loading02Icon} className="w-8 h-8 animate-spin text-emerald-500" />
       </div>
     );
   }
@@ -272,7 +270,7 @@ export default function Home() {
               <p className="text-xs text-slate-400 mt-1">Underwriting risk engine benchmarked against Central Bank of Nigeria (CBN) retail credit rules.</p>
             </div>
             <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-950/80 border border-slate-800 text-[11px] text-slate-300">
-              <BankIcon className="w-3.5 h-3.5 text-emerald-400" />
+              <HugeiconsIcon icon={BankIcon} className="w-3.5 h-3.5 text-emerald-400" />
               <span>NIBSS / CRC Integrated</span>
             </div>
           </div>
@@ -282,7 +280,7 @@ export default function Home() {
             <div className="bg-slate-950/70 p-4 sm:p-5 border border-slate-800/80 rounded-xl space-y-3">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2 text-xs font-bold text-emerald-400 uppercase tracking-wider">
-                  <Shield01Icon className="w-4 h-4 text-emerald-400" />
+                  <HugeiconsIcon icon={Shield01Icon} className="w-4 h-4 text-emerald-400" />
                   <span>Identity Verification (NIBSS / NIMC - Demo Placeholder)</span>
                 </div>
                 <button
@@ -290,7 +288,7 @@ export default function Home() {
                   onClick={handleRandomizeIdentity}
                   className="flex items-center gap-1.5 text-[11px] text-slate-400 hover:text-emerald-400 transition-colors font-medium bg-slate-900 px-2.5 py-1 rounded-lg border border-slate-800"
                 >
-                  <RefreshIcon className="w-3 h-3" />
+                  <HugeiconsIcon icon={RefreshIcon} className="w-3 h-3" />
                   <span>Randomize Demo IDs</span>
                 </button>
               </div>
@@ -303,7 +301,7 @@ export default function Home() {
                       <FieldTooltip text="Demo placeholder: 11-digit Bank Verification Number mandated by CBN to verify applicant identity across Nigerian banks." />
                     </span>
                     <span className="text-[10px] text-emerald-400 flex items-center gap-1 font-normal">
-                      <CheckmarkCircle02Icon className="w-3 h-3" /> Verified (Demo)
+                      <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-3 h-3" /> Verified (Demo)
                     </span>
                   </label>
                   <input
@@ -323,7 +321,7 @@ export default function Home() {
                       <FieldTooltip text="Demo placeholder: 11-digit National Identification Number issued by NIMC for identity cross-validation." />
                     </span>
                     <span className="text-[10px] text-emerald-400 flex items-center gap-1 font-normal">
-                      <CheckmarkCircle02Icon className="w-3 h-3" /> Linked (Demo)
+                      <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-3 h-3" /> Linked (Demo)
                     </span>
                   </label>
                   <input
@@ -412,7 +410,7 @@ export default function Home() {
 
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                  <Location01Icon className="w-3.5 h-3.5 text-emerald-400" />
+                  <HugeiconsIcon icon={Location01Icon} className="w-3.5 h-3.5 text-emerald-400" />
                   <span>State / Location Zone</span>
                   <FieldTooltip text="State location determines urban vs semi-urban risk classification (Lagos, Abuja FCT, and Port Harcourt are classified as major urban centers)." />
                 </label>
@@ -431,7 +429,7 @@ export default function Home() {
 
               <div className="space-y-1 md:col-span-2">
                 <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                  <Shield01Icon className="w-3.5 h-3.5 text-emerald-400" />
+                  <HugeiconsIcon icon={Shield01Icon} className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Credit Bureau Check (CRC / FirstCentral / XDS)</span>
                   <FieldTooltip text="Automated credit report check against licensed Nigerian credit bureaus. Active defaults result in high risk ratings." />
                 </label>
@@ -451,7 +449,7 @@ export default function Home() {
             {/* Income & Loan Parameters in NGN (₦) */}
             <div className="space-y-4">
               <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
-                <CreditCardIcon className="w-4 h-4 text-emerald-400" />
+                <HugeiconsIcon icon={CreditCardIcon} className="w-4 h-4 text-emerald-400" />
                 <span>Financial & Facilities Metrics (in ₦ NGN)</span>
               </h3>
 
@@ -492,7 +490,7 @@ export default function Home() {
                 <div className="space-y-1.5 md:col-span-2 bg-slate-950/60 p-4 border border-slate-800/80 rounded-xl">
                   <div className="flex justify-between items-center">
                     <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                      <Coins01Icon className="w-3.5 h-3.5 text-emerald-400" />
+                      <HugeiconsIcon icon={Coins01Icon} className="w-3.5 h-3.5 text-emerald-400" />
                       <span>Loan Amount Requested (₦)</span>
                       <FieldTooltip text="Total principal credit facility requested by applicant in Naira (₦). Type any loan amount freely." />
                     </label>
@@ -570,7 +568,7 @@ export default function Home() {
               <div className="mt-4 p-4 sm:p-5 bg-slate-950/80 border border-slate-800/80 rounded-xl space-y-4 shadow-inner">
                 <div className="flex justify-between items-center">
                   <span className="text-xs font-bold text-slate-200 flex items-center gap-2">
-                    <PercentIcon className="w-4 h-4 text-emerald-400" />
+                    <HugeiconsIcon icon={PercentIcon} className="w-4 h-4 text-emerald-400" />
                     <span>CBN MPR Interest Rate Benchmark</span>
                     <FieldTooltip text="Annual interest rate (% p.a.) benchmarked against Central Bank of Nigeria Monetary Policy Rate (MPR ~26.75%) plus commercial bank risk spread." />
                   </span>
@@ -609,9 +607,9 @@ export default function Home() {
                 {/* DSR Warning Badge */}
                 <div className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-medium border ${dsrBadge.style}`}>
                   {financialMetrics.dsrRatio <= 33.33 ? (
-                    <CheckmarkCircle02Icon className="w-4 h-4 shrink-0 text-emerald-400" />
+                    <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 shrink-0 text-emerald-400" />
                   ) : (
-                    <Alert01Icon className="w-4 h-4 shrink-0 text-amber-400" />
+                    <HugeiconsIcon icon={Alert01Icon} className="w-4 h-4 shrink-0 text-amber-400" />
                   )}
                   <span>{dsrBadge.label}</span>
                 </div>
@@ -621,16 +619,16 @@ export default function Home() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 text-sm tracking-wide"
+              className="w-full py-4 bg-linear-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 text-sm tracking-wide"
             >
               {loading ? (
                 <>
-                  <Loading02Icon className="w-5 h-5 animate-spin" />
+                  <HugeiconsIcon icon={Loading02Icon} className="w-5 h-5 animate-spin" />
                   <span>Evaluating CBN Credit Rules...</span>
                 </>
               ) : (
                 <>
-                  <AnalyticsUpIcon className="w-5 h-5" />
+                  <HugeiconsIcon icon={AnalyticsUpIcon} className="w-5 h-5" />
                   <span>Run Credit Underwriting Assessment</span>
                 </>
               )}
@@ -684,12 +682,12 @@ export default function Home() {
                 }`}>
                   {predictionResult.eligible ? (
                     <>
-                      <CheckmarkCircle02Icon className="w-4 h-4" />
+                      <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4" />
                       <span>APPROVED</span>
                     </>
                   ) : (
                     <>
-                      <Cancel01Icon className="w-4 h-4" />
+                      <HugeiconsIcon icon={Cancel01Icon} className="w-4 h-4" />
                       <span>REJECTED</span>
                     </>
                   )}
@@ -733,9 +731,9 @@ export default function Home() {
                           }`}
                         >
                           {isPositive ? (
-                            <ArrowUp02Icon className="w-4 h-4 shrink-0 text-emerald-400 mt-0.5" />
+                            <HugeiconsIcon icon={ArrowUp02Icon} className="w-4 h-4 shrink-0 text-emerald-400 mt-0.5" />
                           ) : (
-                            <ArrowDown02Icon className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
+                            <HugeiconsIcon icon={ArrowDown02Icon} className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
                           )}
                           <span className="font-medium">{reason}</span>
                         </div>
@@ -744,19 +742,19 @@ export default function Home() {
                   </div>
                 ) : (
                   <div className="flex items-center gap-2 p-3.5 bg-slate-950 border border-slate-800 text-slate-400 text-xs rounded-xl italic">
-                    <InformationCircleIcon className="w-4 h-4 shrink-0" />
+                    <HugeiconsIcon icon={InformationCircleIcon} className="w-4 h-4 shrink-0" />
                     <span>Explainability metrics unavailable.</span>
                   </div>
                 )}
               </div>
             </div>
           ) : (
-            <div className="bg-slate-900/20 border border-dashed border-slate-800 rounded-2xl p-12 text-center flex flex-col items-center justify-center min-h-[380px] shadow-sm">
+            <div className="bg-slate-900/20 border border-dashed border-slate-800 rounded-2xl p-12 text-center flex flex-col items-center justify-center min-h-95 shadow-sm">
               <div className="p-3.5 bg-slate-900/90 border border-slate-800 text-slate-500 rounded-2xl mb-4 shadow-inner">
-                <Building02Icon className="w-7 h-7 text-emerald-400" />
+                <HugeiconsIcon icon={Building02Icon} className="w-7 h-7 text-emerald-400" />
               </div>
               <h4 className="text-sm font-semibold text-slate-300 tracking-tight">Verdicts & CBN Compliance Output</h4>
-              <p className="text-xs text-slate-400 mt-1.5 max-w-[240px] mx-auto leading-relaxed">
+              <p className="text-xs text-slate-400 mt-1.5 max-w-60 mx-auto leading-relaxed">
                 Complete the NGN credit parameters form to calculate approval probability and view SHAP risk factors.
               </p>
             </div>

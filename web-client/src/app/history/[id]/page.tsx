@@ -4,6 +4,7 @@ import { use, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { api, getAuthToken } from '../../../utils/api';
 import Navbar from '../../../components/Navbar';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { 
   CheckmarkCircle02Icon, 
   Cancel01Icon, 
@@ -16,7 +17,7 @@ import {
   ArrowLeft02Icon,
   Shield01Icon,
   InformationCircleIcon
-} from 'hugeicons-react';
+} from '@hugeicons/core-free-icons';
 
 export default function LogDetailsPage({ params: paramsPromise }: { params: Promise<{ id: string }> }) {
   const params = use(paramsPromise);
@@ -32,9 +33,7 @@ export default function LogDetailsPage({ params: paramsPromise }: { params: Prom
     if (!token) {
       router.push('/login');
     } else {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setAuthChecked(true);
-      // eslint-disable-next-line react-hooks/immutability
       fetchLogDetails();
     }
   }, [router]);
@@ -64,7 +63,7 @@ export default function LogDetailsPage({ params: paramsPromise }: { params: Prom
   if (!authChecked || loading) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <Loading02Icon className="w-8 h-8 animate-spin text-emerald-500" />
+        <HugeiconsIcon icon={Loading02Icon} className="w-8 h-8 animate-spin text-emerald-500" />
       </div>
     );
   }
@@ -81,7 +80,7 @@ export default function LogDetailsPage({ params: paramsPromise }: { params: Prom
           onClick={() => router.push('/history')}
           className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors font-medium group"
         >
-          <ArrowLeft02Icon className="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" />
+          <HugeiconsIcon icon={ArrowLeft02Icon} className="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" />
           <span>Back to Audit Logs</span>
         </button>
 
@@ -111,7 +110,7 @@ export default function LogDetailsPage({ params: paramsPromise }: { params: Prom
                   ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
                   : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
               }`}>
-                {log.eligible ? <CheckmarkCircle02Icon className="w-6 h-6" /> : <Cancel01Icon className="w-6 h-6" />}
+                {log.eligible ? <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-6 h-6" /> : <HugeiconsIcon icon={Cancel01Icon} className="w-6 h-6" />}
               </div>
               <div>
                 <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Underwriting Verdict</p>
@@ -137,7 +136,7 @@ export default function LogDetailsPage({ params: paramsPromise }: { params: Prom
           {/* Input Features */}
           <div className="space-y-3">
             <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
-              <Layers01Icon className="w-4 h-4 text-emerald-400" />
+              <HugeiconsIcon icon={Layers01Icon} className="w-4 h-4 text-emerald-400" />
               <span>Assessed Input Parameters</span>
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 bg-slate-950/60 p-5 border border-slate-800/80 rounded-xl text-xs">
@@ -191,7 +190,7 @@ export default function LogDetailsPage({ params: paramsPromise }: { params: Prom
           {/* Explanations */}
           <div className="space-y-3">
             <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
-              <SparklesIcon className="w-4 h-4 text-emerald-400" />
+              <HugeiconsIcon icon={SparklesIcon} className="w-4 h-4 text-emerald-400" />
               <span>SHAP Explainability Risk Factors</span>
             </h3>
 
@@ -209,9 +208,9 @@ export default function LogDetailsPage({ params: paramsPromise }: { params: Prom
                       }`}
                     >
                       {isPositive ? (
-                        <ArrowUp02Icon className="w-4 h-4 shrink-0 text-emerald-400 mt-0.5" />
+                        <HugeiconsIcon icon={ArrowUp02Icon} className="w-4 h-4 shrink-0 text-emerald-400 mt-0.5" />
                       ) : (
-                        <ArrowDown02Icon className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
+                        <HugeiconsIcon icon={ArrowDown02Icon} className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
                       )}
                       <span className="font-medium">{reason}</span>
                     </div>
@@ -220,7 +219,7 @@ export default function LogDetailsPage({ params: paramsPromise }: { params: Prom
               </div>
             ) : (
               <div className="flex items-center gap-2 p-3.5 bg-slate-950 border border-slate-800 text-slate-400 text-xs rounded-xl italic">
-                <InformationCircleIcon className="w-4 h-4 shrink-0" />
+                <HugeiconsIcon icon={InformationCircleIcon} className="w-4 h-4 shrink-0" />
                 <span>No explainability factors were stored with this log.</span>
               </div>
             )}
@@ -228,7 +227,7 @@ export default function LogDetailsPage({ params: paramsPromise }: { params: Prom
 
           {/* Footer Metadata */}
           <div className="flex items-center gap-2 text-[11px] text-slate-400 border-t border-slate-800/80 pt-4 font-mono">
-            <Calendar01Icon className="w-3.5 h-3.5 text-emerald-400" />
+            <HugeiconsIcon icon={Calendar01Icon} className="w-3.5 h-3.5 text-emerald-400" />
             <span>Audit record created on {new Date(log.createdAt).toLocaleString()}</span>
           </div>
         </div>

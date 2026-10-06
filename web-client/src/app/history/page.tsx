@@ -1,17 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { api, getAuthToken } from '../../utils/api';
 import Navbar from '../../components/Navbar';
+import { HugeiconsIcon } from '@hugeicons/react';
 import { 
   Loading02Icon, 
-  ArrowRight02Icon, 
-  Shield01Icon,
+  ArrowRight02Icon,
   RefreshIcon,
   CheckmarkCircle02Icon,
   Cancel01Icon
-} from 'hugeicons-react';
+} from '@hugeicons/core-free-icons';
 
 export default function HistoryPage() {
   const router = useRouter();
@@ -24,7 +25,9 @@ export default function HistoryPage() {
     if (!token) {
       router.push('/login');
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setAuthChecked(true);
+      // eslint-disable-next-line react-hooks/immutability
       fetchLogs();
     }
   }, [router]);
@@ -34,8 +37,6 @@ export default function HistoryPage() {
     try {
       const data = await api.getLogs(50);
       setLogs(data);
-    } catch (err) {
-      console.error('Failed to load logs', err);
     } finally {
       setLoading(false);
     }
@@ -52,7 +53,7 @@ export default function HistoryPage() {
   if (!authChecked) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <Loading02Icon className="w-8 h-8 animate-spin text-emerald-500" />
+        <HugeiconsIcon icon={Loading02Icon} className="w-8 h-8 animate-spin text-emerald-500" />
       </div>
     );
   }
@@ -77,14 +78,14 @@ export default function HistoryPage() {
             disabled={loading}
             className="flex items-center gap-2 px-4 py-2 bg-slate-900 border border-slate-800 text-xs text-slate-300 hover:text-white rounded-xl transition-all disabled:opacity-50 font-semibold hover:border-slate-700"
           >
-            <RefreshIcon className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+            <HugeiconsIcon icon={RefreshIcon} className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
             <span>{loading ? 'Refreshing...' : 'Refresh Audit Logs'}</span>
           </button>
         </div>
 
         {loading && logs.length === 0 ? (
           <div className="flex justify-center items-center py-24">
-            <Loading02Icon className="w-8 h-8 animate-spin text-emerald-500" />
+            <HugeiconsIcon icon={Loading02Icon} className="w-8 h-8 animate-spin text-emerald-500" />
           </div>
         ) : logs.length > 0 ? (
           <div className="overflow-x-auto border border-slate-800/80 rounded-2xl bg-slate-900/30 backdrop-blur-xl shadow-xl">
@@ -133,11 +134,11 @@ export default function HistoryPage() {
                       }`}>
                         {log.eligible ? (
                           <>
-                            <CheckmarkCircle02Icon className="w-3 h-3" /> APPROVED
+                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-3 h-3" /> APPROVED
                           </>
                         ) : (
                           <>
-                            <Cancel01Icon className="w-3 h-3" /> REJECTED
+                            <HugeiconsIcon icon={Cancel01Icon} className="w-3 h-3" /> REJECTED
                           </>
                         )}
                       </span>
@@ -148,7 +149,7 @@ export default function HistoryPage() {
                     <td className="p-4 text-right">
                       <span className="inline-flex items-center gap-1.5 text-slate-400 group-hover:text-emerald-400 transition-colors font-semibold">
                         <span>View Audit</span>
-                        <ArrowRight02Icon className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                        <HugeiconsIcon icon={ArrowRight02Icon} className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
                       </span>
                     </td>
                   </tr>
