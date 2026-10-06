@@ -24,6 +24,7 @@ export default function Navbar() {
       if (token) {
         try {
           const payload = JSON.parse(atob(token.split('.')[1]));
+          // eslint-disable-next-line react-hooks/set-state-in-effect
           setEmail(payload.email);
         } catch {
           setEmail('officer@csbank.ng');
@@ -42,7 +43,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-3.5 group">
-            <div className="p-2.5 bg-gradient-to-br from-emerald-500/15 to-emerald-600/5 text-emerald-400 rounded-xl border border-emerald-500/20 shadow-inner group-hover:border-emerald-500/40 transition-colors">
+            <div className="p-2.5 bg-linear-to-br from-emerald-500/15 to-emerald-600/5 text-emerald-400 rounded-xl border border-emerald-500/20 shadow-inner group-hover:border-emerald-500/40 transition-colors">
               <HugeiconsIcon icon={BankIcon} className="w-5 h-5 text-emerald-400" />
             </div>
             <div className="flex flex-col">

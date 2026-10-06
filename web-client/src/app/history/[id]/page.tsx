@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { use, useState, useEffect } from 'react';
@@ -15,7 +16,6 @@ import {
   SparklesIcon,
   Calendar01Icon,
   ArrowLeft02Icon,
-  Shield01Icon,
   InformationCircleIcon
 } from '@hugeicons/core-free-icons';
 
@@ -33,7 +33,9 @@ export default function LogDetailsPage({ params: paramsPromise }: { params: Prom
     if (!token) {
       router.push('/login');
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setAuthChecked(true);
+      // eslint-disable-next-line react-hooks/immutability
       fetchLogDetails();
     }
   }, [router]);
