@@ -41,13 +41,50 @@ class ExplainRequest(BaseModel):
     features: list[float]
 
 
+def _format_ngn(val: float) -> str:
+    return f"₦{int(round(val)):,}"
+
+
 def _humanize(feature: str, value: float, shap_val: float) -> str:
     direction = "increased" if shap_val > 0 else "reduced"
+    
+    if feature == "ApplicantIncome":
+        ngn_val = value * 100
+        return f"Applicant Monthly Salary ({_format_ngn(ngn_val)}) {direction} approval likelihood"
+    elif feature == "CoapplicantIncome":
+        ngn_val = value * 100
+        return f"Co-applicant Monthly Income ({_format_ngn(ngn_val)}) {direction} approval likelihood"
+    elif feature == "LoanAmount":
+        ngn_val = value * 100000
+        return f"Requested Loan Amount ({_format_ngn(ngn_val)}) {direction} approval likelihood"
+    elif feature == "Loan_Amount_Term":
+        return f"Loan Tenor ({int(value)} months) {direction} approval likelihood"
+    elif feature == "Credit_History":
+        status = "Good / Clear Record" if value >= 1 else "Delinquent / Bad History"
+        return f"Credit Bureau Check ({status}) {direction} approval likelihood"
+    elif feature == "Property_Area":
+        area_map = {0: "Rural Zone", 1: "Semiurban Zone", 2: "Urban Center"}
+        area_str = area_map.get(int(value), "Semiurban Zone")
+        return f"Property / Location ({area_str}) {direction} approval likelihood"
+    elif feature == "Dependents":
+        dep_str = "3+" if value >= 4 else str(int(value))
+        return f"Dependents ({dep_str}) {direction} approval likelihood"
+    elif feature == "Education":
+        edu_str = "Graduate" if value == 0 else "Non-Graduate"
+        return f"Educational Qualification ({edu_str}) {direction} approval likelihood"
+    elif feature == "Self_Employed":
+        se_str = "Yes" if value >= 1 else "No"
+        return f"Self-Employed ({se_str}) {direction} approval likelihood"
+    elif feature == "Married":
+        m_str = "Married" if value >= 1 else "Single"
+        return f"Marital Status ({m_str}) {direction} approval likelihood"
+    elif feature == "Gender":
+        g_str = "Male" if value >= 1 else "Female"
+        return f"Gender ({g_str}) {direction} approval likelihood"
+
     pretty = feature.replace("_", " ")
-    if feature == "Credit_History":
-        state = "good" if value >= 1 else "poor"
-        return f"{pretty} ({state}) {direction} approval likelihood"
-    return f"{pretty} = {value:g} {direction} approval likelihood"
+    return f"{pretty} ({value:g}) {direction} approval likelihood"
+
 
 
 @app.get("/health")

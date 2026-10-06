@@ -5,18 +5,18 @@ import { useRouter } from 'next/navigation';
 import { api, getAuthToken } from '../../../utils/api';
 import Navbar from '../../../components/Navbar';
 import { 
-  CheckCircle, 
-  XCircle, 
-  Loader2, 
-  TrendingUp, 
-  TrendingDown, 
-  Layers,
-  Sparkles,
-  Calendar,
-  ChevronLeft,
-  ShieldCheck,
-  Landmark
-} from 'lucide-react';
+  CheckmarkCircle02Icon, 
+  Cancel01Icon, 
+  Loading02Icon, 
+  ArrowUp02Icon, 
+  ArrowDown02Icon, 
+  Layers01Icon,
+  SparklesIcon,
+  Calendar01Icon,
+  ArrowLeft02Icon,
+  Shield01Icon,
+  InformationCircleIcon
+} from 'hugeicons-react';
 
 export default function LogDetailsPage({ params: paramsPromise }: { params: Promise<{ id: string }> }) {
   const params = use(paramsPromise);
@@ -32,7 +32,9 @@ export default function LogDetailsPage({ params: paramsPromise }: { params: Prom
     if (!token) {
       router.push('/login');
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setAuthChecked(true);
+      // eslint-disable-next-line react-hooks/immutability
       fetchLogDetails();
     }
   }, [router]);
@@ -62,7 +64,7 @@ export default function LogDetailsPage({ params: paramsPromise }: { params: Prom
   if (!authChecked || loading) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+        <Loading02Icon className="w-8 h-8 animate-spin text-emerald-500" />
       </div>
     );
   }
@@ -77,39 +79,39 @@ export default function LogDetailsPage({ params: paramsPromise }: { params: Prom
         {/* Back Link */}
         <button
           onClick={() => router.push('/history')}
-          className="flex items-center gap-1 text-xs text-slate-400 hover:text-white transition-colors font-medium"
+          className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors font-medium group"
         >
-          <ChevronLeft className="w-4 h-4" />
+          <ArrowLeft02Icon className="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" />
           <span>Back to Audit Logs</span>
         </button>
 
-        <div className="bg-slate-900/50 border border-slate-900 rounded-2xl p-6 space-y-6">
+        <div className="bg-slate-900/40 border border-slate-800/80 backdrop-blur-xl rounded-2xl p-6 sm:p-7 space-y-6 shadow-xl">
           {/* Header */}
-          <div className="flex justify-between items-start border-b border-slate-800 pb-4">
+          <div className="flex justify-between items-start border-b border-slate-800/80 pb-4">
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2.5">
                 <h2 className="text-xl font-bold text-white tracking-tight">Underwriting Record Details</h2>
-                <span className="px-2 py-0.5 rounded text-[10px] uppercase font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  CBN Verified
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] uppercase font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  CBN Verified Audit
                 </span>
               </div>
-              <p className="text-[10px] text-slate-400 font-mono mt-0.5">Audit ID: {log.id}</p>
+              <p className="text-[11px] text-slate-400 font-mono mt-1">Audit ID: {log.id}</p>
             </div>
             <div className="text-right">
-              <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Model Version</span>
-              <p className="text-xs font-mono text-slate-300">{log.modelVersion}</p>
+              <span className="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Model Version</span>
+              <p className="text-xs font-mono text-slate-200 mt-0.5">{log.modelVersion}</p>
             </div>
           </div>
 
           {/* Verdict Card */}
-          <div className="flex flex-col sm:flex-row items-center justify-between p-5 bg-slate-950 border border-slate-850 rounded-xl gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between p-5 bg-slate-950/80 border border-slate-800/80 rounded-xl gap-4 shadow-inner">
             <div className="flex items-center gap-4">
               <div className={`p-3 rounded-xl border ${
                 log.eligible 
                   ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
                   : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
               }`}>
-                {log.eligible ? <CheckCircle className="w-6 h-6" /> : <XCircle className="w-6 h-6" />}
+                {log.eligible ? <CheckmarkCircle02Icon className="w-6 h-6" /> : <Cancel01Icon className="w-6 h-6" />}
               </div>
               <div>
                 <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Underwriting Verdict</p>
@@ -134,11 +136,11 @@ export default function LogDetailsPage({ params: paramsPromise }: { params: Prom
 
           {/* Input Features */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-              <Layers className="w-4 h-4 text-emerald-400" />
+            <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+              <Layers01Icon className="w-4 h-4 text-emerald-400" />
               <span>Assessed Input Parameters</span>
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 bg-slate-950/40 p-5 border border-slate-850 rounded-xl text-xs">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 bg-slate-950/60 p-5 border border-slate-800/80 rounded-xl text-xs">
               <div>
                 <span className="text-slate-400">Gender</span>
                 <p className="text-slate-200 font-semibold mt-0.5">{log.input?.Gender}</p>
@@ -188,53 +190,53 @@ export default function LogDetailsPage({ params: paramsPromise }: { params: Prom
 
           {/* Explanations */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-emerald-400" />
+            <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+              <SparklesIcon className="w-4 h-4 text-emerald-400" />
               <span>SHAP Explainability Risk Factors</span>
             </h3>
 
             {log.reasons && log.reasons.length > 0 ? (
               <div className="space-y-2">
                 {log.reasons.map((reason: string, idx: number) => {
-                  const isPositive = reason.includes('increased') || reason.includes('good');
+                  const isPositive = reason.includes('increased') || reason.includes('good') || reason.includes('Good');
                   return (
                     <div
                       key={idx}
-                      className={`flex items-start gap-2.5 p-3 border rounded-xl text-xs leading-relaxed ${
+                      className={`flex items-start gap-3 p-3.5 border rounded-xl text-xs leading-relaxed ${
                         isPositive
-                          ? 'bg-emerald-500/5 text-emerald-400 border-emerald-500/10'
-                          : 'bg-rose-500/5 text-rose-400 border-rose-500/10'
+                          ? 'bg-emerald-500/5 text-emerald-300 border-emerald-500/15'
+                          : 'bg-rose-500/5 text-rose-300 border-rose-500/15'
                       }`}
                     >
                       {isPositive ? (
-                        <TrendingUp className="w-4 h-4 shrink-0 text-emerald-500" />
+                        <ArrowUp02Icon className="w-4 h-4 shrink-0 text-emerald-400 mt-0.5" />
                       ) : (
-                        <TrendingDown className="w-4 h-4 shrink-0 text-rose-500" />
+                        <ArrowDown02Icon className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
                       )}
-                      <span>{reason}</span>
+                      <span className="font-medium">{reason}</span>
                     </div>
                   );
                 })}
               </div>
             ) : (
-              <div className="text-slate-500 italic text-xs leading-relaxed">
-                No explainability factors were stored with this log.
+              <div className="flex items-center gap-2 p-3.5 bg-slate-950 border border-slate-800 text-slate-400 text-xs rounded-xl italic">
+                <InformationCircleIcon className="w-4 h-4 shrink-0" />
+                <span>No explainability factors were stored with this log.</span>
               </div>
             )}
           </div>
 
           {/* Footer Metadata */}
-          <div className="flex items-center gap-2 text-[10px] text-slate-400 border-t border-slate-800 pt-4">
-            <Calendar className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="flex items-center gap-2 text-[11px] text-slate-400 border-t border-slate-800/80 pt-4 font-mono">
+            <Calendar01Icon className="w-3.5 h-3.5 text-emerald-400" />
             <span>Audit record created on {new Date(log.createdAt).toLocaleString()}</span>
           </div>
         </div>
       </main>
 
-      <footer className="border-t border-slate-900 py-6 bg-slate-900/10 text-center text-xs text-slate-600 mt-auto">
+      <footer className="border-t border-slate-800/60 py-6 bg-slate-950 text-center text-xs text-slate-400 mt-auto">
         <p>© 2026 CSBank Nigeria Ltd. Internal auditing details.</p>
       </footer>
     </div>
   );
 }
-

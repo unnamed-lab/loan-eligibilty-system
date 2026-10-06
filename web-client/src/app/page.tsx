@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -5,22 +6,26 @@ import { useRouter } from 'next/navigation';
 import { api, getAuthToken } from '../utils/api';
 import Navbar from '../components/Navbar';
 import { 
-  CheckCircle, 
-  XCircle, 
-  Loader2, 
-  TrendingUp, 
-  TrendingDown, 
-  Info,
-  Calculator,
-  ShieldCheck,
-  Building2,
-  Percent,
-  CreditCard,
-  AlertTriangle,
-  FileCheck2,
-  MapPin,
-  Landmark
-} from 'lucide-react';
+  CheckmarkCircle02Icon, 
+  Cancel01Icon, 
+  InformationCircleIcon, 
+  Calculator01Icon, 
+  Shield01Icon, 
+  Building02Icon, 
+  PercentIcon, 
+  CreditCardIcon, 
+  Alert01Icon, 
+  Location01Icon, 
+  BankIcon,
+  ArrowUp02Icon, 
+  ArrowDown02Icon,
+  UserIcon,
+  UserGroupIcon,
+  Loading02Icon,
+  RefreshIcon,
+  Coins01Icon,
+  AnalyticsUpIcon
+} from 'hugeicons-react';
 
 const NIGERIAN_STATES = [
   // Major Urban Centers
@@ -68,6 +73,13 @@ const NIGERIAN_STATES = [
   { name: 'Other Nigerian States / Rural', category: 'Rural' },
 ];
 
+function generateRandomDigitString(length: number, prefix = ''): string {
+  let res = prefix;
+  while (res.length < length) {
+    res += Math.floor(Math.random() * 10).toString();
+  }
+  return res.slice(0, length);
+}
 
 const DEFAULT_FORM = {
   BVN: '22145890312',
@@ -89,8 +101,8 @@ const DEFAULT_FORM = {
 function FieldTooltip({ text }: { text: string }) {
   return (
     <span className="relative inline-block group ml-1 align-middle">
-      <Info className="w-3.5 h-3.5 text-slate-400 hover:text-emerald-400 cursor-pointer transition-colors" />
-      <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block group-focus-within:block w-60 p-2.5 bg-slate-900 border border-slate-700 text-[11px] text-slate-200 rounded-xl shadow-2xl z-50 leading-snug font-normal text-left normal-case tracking-normal">
+      <InformationCircleIcon className="w-3.5 h-3.5 text-slate-400 hover:text-emerald-400 cursor-pointer transition-colors" />
+      <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block group-focus-within:block w-64 p-2.5 bg-slate-900 border border-slate-700/80 text-[11px] text-slate-200 rounded-xl shadow-2xl z-50 leading-snug font-normal text-left normal-case tracking-normal">
         {text}
         <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-700"></span>
       </span>
@@ -99,7 +111,6 @@ function FieldTooltip({ text }: { text: string }) {
 }
 
 export default function Home() {
-
   const router = useRouter();
   const [authChecked, setAuthChecked] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -111,6 +122,7 @@ export default function Home() {
     if (!token) {
       router.push('/login');
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setAuthChecked(true);
     }
   }, [router]);
@@ -124,12 +136,21 @@ export default function Home() {
     }).format(amount);
   };
 
+  // Helper to randomize identity placeholders (for demo purposes)
+  const handleRandomizeIdentity = () => {
+    setFormData(prev => ({
+      ...prev,
+      BVN: generateRandomDigitString(11, '221'),
+      NIN: generateRandomDigitString(11, '541')
+    }));
+  };
+
   // Live Financial Metrics & CBN Debt Service Ratio (DSR / DTI) Calculation
   const financialMetrics = useMemo(() => {
-    const totalMonthlyIncome = formData.ApplicantIncomeNGN + formData.CoapplicantIncomeNGN;
-    const monthlyRate = (formData.InterestRateAnnual / 100) / 12;
-    const n = formData.LoanTermMonths;
-    const principal = formData.LoanAmountNGN;
+    const totalMonthlyIncome = (formData.ApplicantIncomeNGN || 0) + (formData.CoapplicantIncomeNGN || 0);
+    const monthlyRate = ((formData.InterestRateAnnual || 0) / 100) / 12;
+    const n = formData.LoanTermMonths || 1;
+    const principal = formData.LoanAmountNGN || 0;
 
     // Monthly EMI Calculation
     let monthlyRepayment = 0;
@@ -166,9 +187,9 @@ export default function Home() {
       // Map NGN inputs to standard ML model contract ranges
       // ApplicantIncome: ₦450,000 -> 4500 (scaled for ML contract continuous feature min:0, max:100000)
       // LoanAmount: ₦5,000,000 -> 50 (in ₦'000 / $k model equivalent scale min:0, max:1000)
-      const mappedApplicantIncome = Math.min(100000, Math.max(0, Math.round(formData.ApplicantIncomeNGN / 100)));
-      const mappedCoapplicantIncome = Math.min(100000, Math.max(0, Math.round(formData.CoapplicantIncomeNGN / 100)));
-      const mappedLoanAmount = Math.min(1000, Math.max(1, Math.round(formData.LoanAmountNGN / 100000)));
+      const mappedApplicantIncome = Math.min(100000, Math.max(0, Math.round((formData.ApplicantIncomeNGN || 0) / 100)));
+      const mappedCoapplicantIncome = Math.min(100000, Math.max(0, Math.round((formData.CoapplicantIncomeNGN || 0) / 100)));
+      const mappedLoanAmount = Math.min(1000, Math.max(1, Math.round((formData.LoanAmountNGN || 0) / 100000)));
 
       const isSelfEmployed = formData.EmploymentSector.includes('Self') || formData.EmploymentSector.includes('MSME');
       const creditHistoryValue = formData.CreditBureauStatus.includes('Good') ? 1 : 0;
@@ -206,7 +227,7 @@ export default function Home() {
   if (!authChecked) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+        <Loading02Icon className="w-8 h-8 animate-spin text-emerald-500" />
       </div>
     );
   }
@@ -239,29 +260,39 @@ export default function Home() {
 
       <div className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-5 gap-8">
         {/* Form Section */}
-        <div className="lg:col-span-3 bg-slate-900/50 border border-slate-900 rounded-2xl p-6 space-y-6">
+        <div className="lg:col-span-3 bg-slate-900/40 border border-slate-800/80 backdrop-blur-xl rounded-2xl p-6 sm:p-7 space-y-6 shadow-xl">
           <div className="flex justify-between items-start">
             <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-xl font-bold text-white tracking-tight">Nigeria Credit Eligibility Calculator</h2>
-                <span className="px-2 py-0.5 rounded text-[10px] uppercase font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  CBN Standard
+              <div className="flex items-center gap-2.5">
+                <h2 className="text-xl font-bold text-white tracking-tight">Nigeria Credit Eligibility Assessment</h2>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] uppercase font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  CBN Standards
                 </span>
               </div>
-              <p className="text-xs text-slate-400 mt-1">Assess loan underwriting risk under Central Bank of Nigeria (CBN) retail credit rules.</p>
+              <p className="text-xs text-slate-400 mt-1">Underwriting risk engine benchmarked against Central Bank of Nigeria (CBN) retail credit rules.</p>
             </div>
-            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-[11px] text-slate-300">
-              <Landmark className="w-3.5 h-3.5 text-emerald-400" />
-              <span>NIBSS / CRC Bureau Integrated</span>
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-950/80 border border-slate-800 text-[11px] text-slate-300">
+              <BankIcon className="w-3.5 h-3.5 text-emerald-400" />
+              <span>NIBSS / CRC Integrated</span>
             </div>
           </div>
 
           <form onSubmit={handlePredict} className="space-y-6">
-            {/* Identity & Verification Section */}
-            <div className="bg-slate-950/60 p-4 border border-slate-850 rounded-xl space-y-3">
-              <div className="flex items-center gap-2 text-xs font-bold text-emerald-400 uppercase tracking-wider">
-                <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                <span>Regulatory Identity & Verification (NIBSS / NIMC)</span>
+            {/* Identity & Verification Section (Demo Placeholder) */}
+            <div className="bg-slate-950/70 p-4 sm:p-5 border border-slate-800/80 rounded-xl space-y-3">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2 text-xs font-bold text-emerald-400 uppercase tracking-wider">
+                  <Shield01Icon className="w-4 h-4 text-emerald-400" />
+                  <span>Identity Verification (NIBSS / NIMC - Demo Placeholder)</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleRandomizeIdentity}
+                  className="flex items-center gap-1.5 text-[11px] text-slate-400 hover:text-emerald-400 transition-colors font-medium bg-slate-900 px-2.5 py-1 rounded-lg border border-slate-800"
+                >
+                  <RefreshIcon className="w-3 h-3" />
+                  <span>Randomize Demo IDs</span>
+                </button>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -269,13 +300,11 @@ export default function Home() {
                   <label className="text-xs font-semibold text-slate-400 flex justify-between items-center">
                     <span className="flex items-center gap-1">
                       <span>BVN (11-Digits)</span>
-                      <FieldTooltip text="11-digit Bank Verification Number mandated by CBN to verify applicant identity across all Nigerian commercial banks." />
+                      <FieldTooltip text="Demo placeholder: 11-digit Bank Verification Number mandated by CBN to verify applicant identity across Nigerian banks." />
                     </span>
-                    {formData.BVN.length === 11 && (
-                      <span className="text-[10px] text-emerald-400 flex items-center gap-1 font-normal">
-                        <CheckCircle className="w-3 h-3" /> Verified
-                      </span>
-                    )}
+                    <span className="text-[10px] text-emerald-400 flex items-center gap-1 font-normal">
+                      <CheckmarkCircle02Icon className="w-3 h-3" /> Verified (Demo)
+                    </span>
                   </label>
                   <input
                     type="text"
@@ -283,7 +312,7 @@ export default function Home() {
                     value={formData.BVN}
                     onChange={(e) => handleFieldChange('BVN', e.target.value.replace(/\D/g, ''))}
                     placeholder="22145890312"
-                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 focus:outline-none focus:border-emerald-500 text-sm font-mono text-white placeholder-slate-600"
+                    className="w-full bg-slate-900/90 border border-slate-800 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm font-mono text-white placeholder-slate-600 transition-all"
                   />
                 </div>
 
@@ -291,13 +320,11 @@ export default function Home() {
                   <label className="text-xs font-semibold text-slate-400 flex justify-between items-center">
                     <span className="flex items-center gap-1">
                       <span>NIN (National ID)</span>
-                      <FieldTooltip text="11-digit National Identification Number issued by NIMC for identity cross-validation." />
+                      <FieldTooltip text="Demo placeholder: 11-digit National Identification Number issued by NIMC for identity cross-validation." />
                     </span>
-                    {formData.NIN.length === 11 && (
-                      <span className="text-[10px] text-emerald-400 flex items-center gap-1 font-normal">
-                        <CheckCircle className="w-3 h-3" /> Linked
-                      </span>
-                    )}
+                    <span className="text-[10px] text-emerald-400 flex items-center gap-1 font-normal">
+                      <CheckmarkCircle02Icon className="w-3 h-3" /> Linked (Demo)
+                    </span>
                   </label>
                   <input
                     type="text"
@@ -305,7 +332,7 @@ export default function Home() {
                     value={formData.NIN}
                     onChange={(e) => handleFieldChange('NIN', e.target.value.replace(/\D/g, ''))}
                     placeholder="54109823411"
-                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 focus:outline-none focus:border-emerald-500 text-sm font-mono text-white placeholder-slate-600"
+                    className="w-full bg-slate-900/90 border border-slate-800 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm font-mono text-white placeholder-slate-600 transition-all"
                   />
                 </div>
               </div>
@@ -314,11 +341,11 @@ export default function Home() {
             {/* Applicant Demographics */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-400 uppercase">Gender</label>
+                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Gender</label>
                 <select
                   value={formData.Gender}
                   onChange={(e) => handleFieldChange('Gender', e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 focus:outline-none focus:border-emerald-500 text-sm text-slate-200"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm text-slate-200 transition-all"
                 >
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
@@ -326,11 +353,11 @@ export default function Home() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-400 uppercase">Marital Status</label>
+                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Marital Status</label>
                 <select
                   value={formData.Married}
                   onChange={(e) => handleFieldChange('Married', e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 focus:outline-none focus:border-emerald-500 text-sm text-slate-200"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm text-slate-200 transition-all"
                 >
                   <option value="Yes">Married</option>
                   <option value="No">Single</option>
@@ -338,14 +365,14 @@ export default function Home() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-400 uppercase flex items-center gap-1">
+                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
                   <span>Dependents</span>
                   <FieldTooltip text="Number of financial dependents. Higher dependent ratios increase estimated household living expenses." />
                 </label>
                 <select
                   value={formData.Dependents}
                   onChange={(e) => handleFieldChange('Dependents', e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 focus:outline-none focus:border-emerald-500 text-sm text-slate-200"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm text-slate-200 transition-all"
                 >
                   <option value="0">0 Dependents</option>
                   <option value="1">1 Dependent</option>
@@ -355,11 +382,11 @@ export default function Home() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-400 uppercase">Educational Level</label>
+                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Educational Qualification</label>
                 <select
                   value={formData.Education}
                   onChange={(e) => handleFieldChange('Education', e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 focus:outline-none focus:border-emerald-500 text-sm text-slate-200"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm text-slate-200 transition-all"
                 >
                   <option value="Graduate">Tertiary Degree (Graduate)</option>
                   <option value="Not Graduate">Secondary / Non-Graduate</option>
@@ -367,14 +394,14 @@ export default function Home() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-400 uppercase flex items-center gap-1">
+                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
                   <span>Employment Sector</span>
-                  <FieldTooltip text="Income stability tier. Civil servants on IPPIS and corporate staff receive higher stability scores than informal sector applicants." />
+                  <FieldTooltip text="Income stability tier. Civil servants on IPPIS and corporate staff receive higher stability scores." />
                 </label>
                 <select
                   value={formData.EmploymentSector}
                   onChange={(e) => handleFieldChange('EmploymentSector', e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 focus:outline-none focus:border-emerald-500 text-sm text-slate-200"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm text-slate-200 transition-all"
                 >
                   <option value="Civil Service (IPPIS)">Civil Service (State / Federal IPPIS)</option>
                   <option value="Private Corporate">Private Corporate Employee</option>
@@ -384,15 +411,15 @@ export default function Home() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-400 uppercase flex items-center gap-1">
-                  <MapPin className="w-3 h-3 text-emerald-400" />
-                  <span>State / Location</span>
+                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                  <Location01Icon className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>State / Location Zone</span>
                   <FieldTooltip text="State location determines urban vs semi-urban risk classification (Lagos, Abuja FCT, and Port Harcourt are classified as major urban centers)." />
                 </label>
                 <select
                   value={formData.StateLocation}
                   onChange={(e) => handleFieldChange('StateLocation', e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 focus:outline-none focus:border-emerald-500 text-sm text-slate-200"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm text-slate-200 transition-all"
                 >
                   {NIGERIAN_STATES.map((state) => (
                     <option key={state.name} value={state.name}>
@@ -403,15 +430,15 @@ export default function Home() {
               </div>
 
               <div className="space-y-1 md:col-span-2">
-                <label className="text-xs font-semibold text-slate-400 uppercase flex items-center gap-1">
-                  <FileCheck2 className="w-3.5 h-3.5 text-emerald-400" />
+                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                  <Shield01Icon className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Credit Bureau Check (CRC / FirstCentral / XDS)</span>
-                  <FieldTooltip text="Automated credit report check against licensed Nigerian credit bureaus (CRC, FirstCentral, XDS). Active defaults result in high risk ratings." />
+                  <FieldTooltip text="Automated credit report check against licensed Nigerian credit bureaus. Active defaults result in high risk ratings." />
                 </label>
                 <select
                   value={formData.CreditBureauStatus}
                   onChange={(e) => handleFieldChange('CreditBureauStatus', e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 focus:outline-none focus:border-emerald-500 text-sm text-slate-200"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm text-slate-200 transition-all"
                 >
                   <option value="Good (No Default / CRC Verified)">Good History (Clear CRC/FirstCentral Credit Report)</option>
                   <option value="Poor/Delinquent Record">Delinquent / Overdue Debt / Bad History</option>
@@ -419,78 +446,112 @@ export default function Home() {
               </div>
             </div>
 
-            <hr className="border-slate-900" />
+            <hr className="border-slate-800/80" />
 
             {/* Income & Loan Parameters in NGN (₦) */}
-            <div>
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                <CreditCard className="w-4 h-4 text-emerald-400" />
+            <div className="space-y-4">
+              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                <CreditCardIcon className="w-4 h-4 text-emerald-400" />
                 <span>Financial & Facilities Metrics (in ₦ NGN)</span>
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-400 uppercase flex items-center gap-1">
+                  <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
                     <span>Applicant Monthly Salary (₦)</span>
                     <FieldTooltip text="Net monthly salary or verified business income in Naira (₦) credited to applicant's primary bank account." />
                   </label>
                   <input
                     type="number"
                     min="0"
-                    step="10000"
+                    step="any"
                     value={formData.ApplicantIncomeNGN}
                     onChange={(e) => handleFieldChange('ApplicantIncomeNGN', Number(e.target.value))}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 focus:outline-none focus:border-emerald-500 text-sm text-white font-mono"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm text-white font-mono transition-all"
                   />
-                  <span className="text-[11px] text-slate-400 font-mono">{formatNGN(formData.ApplicantIncomeNGN)} / mo</span>
+                  <div className="text-[11px] text-slate-400 font-mono mt-0.5">{formatNGN(formData.ApplicantIncomeNGN || 0)} / mo</div>
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-400 uppercase flex items-center gap-1">
+                  <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
                     <span>Co-applicant Income (₦)</span>
                     <FieldTooltip text="Verified monthly income of spouse or co-borrower in Naira (₦), which increases total household repayment capability." />
                   </label>
                   <input
                     type="number"
                     min="0"
-                    step="10000"
+                    step="any"
                     value={formData.CoapplicantIncomeNGN}
                     onChange={(e) => handleFieldChange('CoapplicantIncomeNGN', Number(e.target.value))}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 focus:outline-none focus:border-emerald-500 text-sm text-white font-mono"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm text-white font-mono transition-all"
                   />
-                  <span className="text-[11px] text-slate-400 font-mono">{formatNGN(formData.CoapplicantIncomeNGN)} / mo</span>
+                  <div className="text-[11px] text-slate-400 font-mono mt-0.5">{formatNGN(formData.CoapplicantIncomeNGN || 0)} / mo</div>
                 </div>
 
-                <div className="space-y-1">
+                {/* Flexible Loan Amount Input */}
+                <div className="space-y-1.5 md:col-span-2 bg-slate-950/60 p-4 border border-slate-800/80 rounded-xl">
                   <div className="flex justify-between items-center">
-                    <label className="text-xs font-semibold text-slate-400 uppercase flex items-center gap-1">
+                    <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                      <Coins01Icon className="w-3.5 h-3.5 text-emerald-400" />
                       <span>Loan Amount Requested (₦)</span>
-                      <FieldTooltip text="Total principal credit facility requested by applicant in Naira (₦)." />
+                      <FieldTooltip text="Total principal credit facility requested by applicant in Naira (₦). Type any loan amount freely." />
                     </label>
+                    <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+                      {formatNGN(formData.LoanAmountNGN || 0)}
+                    </span>
                   </div>
+
                   <input
                     type="number"
-                    min="100000"
-                    step="250000"
+                    min="10000"
+                    step="any"
                     value={formData.LoanAmountNGN}
                     onChange={(e) => handleFieldChange('LoanAmountNGN', Number(e.target.value))}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 focus:outline-none focus:border-emerald-500 text-sm text-white font-mono"
+                    placeholder="Enter any loan amount (e.g. 7500000)"
+                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 text-base text-white font-mono font-bold transition-all placeholder-slate-600"
                   />
-                  <span className="text-[11px] text-emerald-400 font-mono font-bold">{formatNGN(formData.LoanAmountNGN)}</span>
+
+                  {/* Preset Amount Shortcuts for Convenience */}
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    <span className="text-[10px] text-slate-400 font-medium">Quick Presets:</span>
+                    {[
+                      { label: '₦1M', val: 1000000 },
+                      { label: '₦2.5M', val: 2500000 },
+                      { label: '₦5M', val: 5000000 },
+                      { label: '₦10M', val: 10000000 },
+                      { label: '₦25M', val: 25000000 },
+                      { label: '₦50M', val: 50000000 },
+                    ].map((preset) => (
+                      <button
+                        key={preset.label}
+                        type="button"
+                        onClick={() => handleFieldChange('LoanAmountNGN', preset.val)}
+                        className={`text-[11px] font-mono px-2.5 py-1 rounded-lg border transition-all ${
+                          formData.LoanAmountNGN === preset.val
+                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 font-bold'
+                            : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white hover:border-slate-700'
+                        }`}
+                      >
+                        {preset.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="space-y-1">
+                <div className="space-y-1 md:col-span-2">
                   <div className="flex justify-between items-center">
-                    <label className="text-xs font-semibold text-slate-400 uppercase flex items-center gap-1">
+                    <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
                       <span>Loan Tenor (Months)</span>
                       <FieldTooltip text="Duration of loan repayment in months. Longer tenors reduce monthly EMI but increase overall interest paid." />
                     </label>
-                    <span className="text-[10px] text-slate-500">{(formData.LoanTermMonths / 12).toFixed(1)} years</span>
+                    <span className="text-[11px] text-slate-400 font-mono font-medium">
+                      {((formData.LoanTermMonths || 36) / 12).toFixed(1)} years
+                    </span>
                   </div>
                   <select
                     value={formData.LoanTermMonths}
                     onChange={(e) => handleFieldChange('LoanTermMonths', Number(e.target.value))}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 focus:outline-none focus:border-emerald-500 text-sm text-white"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm text-slate-200 transition-all"
                   >
                     <option value={6}>6 Months</option>
                     <option value={12}>12 Months (1 Year)</option>
@@ -506,10 +567,10 @@ export default function Home() {
               </div>
 
               {/* Interest Rate & Repayment Preview */}
-              <div className="mt-4 p-4 bg-slate-950/70 border border-slate-850 rounded-xl space-y-3">
+              <div className="mt-4 p-4 sm:p-5 bg-slate-950/80 border border-slate-800/80 rounded-xl space-y-4 shadow-inner">
                 <div className="flex justify-between items-center">
-                  <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-                    <Percent className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="text-xs font-bold text-slate-200 flex items-center gap-2">
+                    <PercentIcon className="w-4 h-4 text-emerald-400" />
                     <span>CBN MPR Interest Rate Benchmark</span>
                     <FieldTooltip text="Annual interest rate (% p.a.) benchmarked against Central Bank of Nigeria Monetary Policy Rate (MPR ~26.75%) plus commercial bank risk spread." />
                   </span>
@@ -517,42 +578,40 @@ export default function Home() {
                     <input
                       type="number"
                       step="0.25"
-                      min="10"
-                      max="45"
+                      min="5"
+                      max="50"
                       value={formData.InterestRateAnnual}
                       onChange={(e) => handleFieldChange('InterestRateAnnual', Number(e.target.value))}
-                      className="w-20 bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-xs text-right font-mono text-emerald-400 font-bold focus:outline-none focus:border-emerald-500"
+                      className="w-20 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-right font-mono text-emerald-400 font-bold focus:outline-none focus:border-emerald-500"
                     />
-                    <span className="text-xs text-slate-400">% p.a.</span>
+                    <span className="text-xs text-slate-400 font-medium">% p.a.</span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs border-t border-slate-900 pt-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs border-t border-slate-800/60 pt-3.5">
                   <div>
-                    <span className="text-[10px] text-slate-500 uppercase font-semibold flex items-center gap-1">
-                      <span>Monthly EMI</span>
-                    </span>
-                    <p className="font-mono font-bold text-slate-200 mt-0.5">{formatNGN(financialMetrics.monthlyRepayment)}</p>
+                    <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Monthly EMI</span>
+                    <p className="font-mono font-bold text-slate-100 mt-0.5">{formatNGN(financialMetrics.monthlyRepayment)}</p>
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-500 uppercase font-semibold">Total Repayment</span>
+                    <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Total Repayment</span>
                     <p className="font-mono font-semibold text-slate-300 mt-0.5">{formatNGN(financialMetrics.totalRepayment)}</p>
                   </div>
                   <div className="col-span-2 sm:col-span-1">
-                    <span className="text-[10px] text-slate-500 uppercase font-semibold flex items-center gap-1">
-                      <span>Debt-Service Ratio (DSR)</span>
-                      <FieldTooltip text="Calculates monthly loan repayment as a % of total net income. CBN guidelines recommend DSR <= 33.33% to avoid over-indebtedness." />
+                    <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold flex items-center gap-1">
+                      <span>Debt-Service Ratio</span>
+                      <FieldTooltip text="Calculates monthly loan repayment as a % of total net income. CBN guidelines recommend DSR <= 33.33%." />
                     </span>
                     <p className="font-mono font-bold text-white mt-0.5">{financialMetrics.dsrRatio.toFixed(1)}%</p>
                   </div>
                 </div>
 
                 {/* DSR Warning Badge */}
-                <div className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold border ${dsrBadge.style}`}>
+                <div className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-medium border ${dsrBadge.style}`}>
                   {financialMetrics.dsrRatio <= 33.33 ? (
-                    <CheckCircle className="w-4 h-4 shrink-0 text-emerald-400" />
+                    <CheckmarkCircle02Icon className="w-4 h-4 shrink-0 text-emerald-400" />
                   ) : (
-                    <AlertTriangle className="w-4 h-4 shrink-0 text-amber-400" />
+                    <Alert01Icon className="w-4 h-4 shrink-0 text-amber-400" />
                   )}
                   <span>{dsrBadge.label}</span>
                 </div>
@@ -562,12 +621,18 @@ export default function Home() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/15 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
+              className="w-full py-4 bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 text-sm tracking-wide"
             >
               {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <>
+                  <Loading02Icon className="w-5 h-5 animate-spin" />
+                  <span>Evaluating CBN Credit Rules...</span>
+                </>
               ) : (
-                <span>Check Nigerian Banking Eligibility</span>
+                <>
+                  <AnalyticsUpIcon className="w-5 h-5" />
+                  <span>Run Credit Underwriting Assessment</span>
+                </>
               )}
             </button>
           </form>
@@ -576,14 +641,14 @@ export default function Home() {
         {/* Output Section */}
         <div className="lg:col-span-2 space-y-6">
           {predictionResult ? (
-            <div className="bg-slate-900/50 border border-slate-900 rounded-2xl p-6 space-y-6">
+            <div className="bg-slate-900/40 border border-slate-800/80 backdrop-blur-xl rounded-2xl p-6 sm:p-7 space-y-6 shadow-xl sticky top-24">
               <div>
                 <h3 className="text-lg font-bold text-white tracking-tight">Underwriting Verdict</h3>
-                <p className="text-xs text-slate-400 mt-1">CBN Compliant ML Underwriting Analysis</p>
+                <p className="text-xs text-slate-400 mt-1">CBN Compliant Machine Learning Underwriting Output</p>
               </div>
 
-              <div className="flex flex-col items-center py-6 text-center">
-                <div className="relative w-32 h-32 mb-6">
+              <div className="flex flex-col items-center py-4 text-center">
+                <div className="relative w-36 h-36 mb-5">
                   <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                     <circle
                       cx="50"
@@ -605,99 +670,104 @@ export default function Home() {
                     />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-2xl font-black text-white font-mono">
+                    <span className="text-3xl font-black text-white font-mono tracking-tight">
                       {Math.round(predictionResult.probability * 100)}%
                     </span>
-                    <span className="text-[10px] text-slate-500 uppercase tracking-wider">Approval Prob</span>
+                    <span className="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Approval Prob</span>
                   </div>
                 </div>
 
-                <div className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold uppercase border tracking-wider ${
+                <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase border tracking-wider ${
                   predictionResult.eligible
-                    ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                    : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+                    ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 shadow-sm'
+                    : 'bg-rose-500/10 text-rose-400 border-rose-500/30 shadow-sm'
                 }`}>
                   {predictionResult.eligible ? (
                     <>
-                      <CheckCircle className="w-3.5 h-3.5" />
+                      <CheckmarkCircle02Icon className="w-4 h-4" />
                       <span>APPROVED</span>
                     </>
                   ) : (
                     <>
-                      <XCircle className="w-3.5 h-3.5" />
+                      <Cancel01Icon className="w-4 h-4" />
                       <span>REJECTED</span>
                     </>
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 text-left w-full bg-slate-950 p-3 rounded-xl border border-slate-850 mt-4 text-xs">
+                <div className="grid grid-cols-2 gap-3 text-left w-full bg-slate-950/80 p-3.5 rounded-xl border border-slate-800/80 mt-5 text-xs">
                   <div>
-                    <span className="text-[10px] text-slate-500 uppercase">Max Approved Facilities</span>
-                    <p className="font-mono font-semibold text-emerald-400">
-                      {predictionResult.eligible ? formatNGN(formData.LoanAmountNGN) : '₦0'}
+                    <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Max Facility Approved</span>
+                    <p className="font-mono font-bold text-emerald-400 mt-0.5">
+                      {predictionResult.eligible ? formatNGN(formData.LoanAmountNGN || 0) : '₦0'}
                     </p>
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-500 uppercase">Underwriting Speed</span>
-                    <p className="font-mono font-semibold text-slate-300">
+                    <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Underwriting Latency</span>
+                    <p className="font-mono font-semibold text-slate-200 mt-0.5">
                       {predictionResult.inferenceLatencyMs?.toFixed(2) ?? 0} ms
                     </p>
                   </div>
                 </div>
               </div>
 
-              <hr className="border-slate-900" />
+              <hr className="border-slate-800/80" />
 
               <div className="space-y-3">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">SHAP Risk Drivers & Factors</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">SHAP Risk Drivers & Factors</span>
+                  <span className="text-[10px] text-slate-400 font-mono">TreeExplainer v1.0</span>
+                </div>
+
                 {predictionResult.reasons && predictionResult.reasons.length > 0 ? (
                   <div className="space-y-2">
                     {predictionResult.reasons.map((reason: string, idx: number) => {
-                      const isPositive = reason.includes('increased') || reason.includes('good');
+                      const isPositive = reason.includes('increased') || reason.includes('good') || reason.includes('Good');
                       return (
                         <div
                           key={idx}
-                          className={`flex items-start gap-2.5 p-3 border rounded-xl text-xs leading-relaxed ${
+                          className={`flex items-start gap-3 p-3.5 border rounded-xl text-xs leading-relaxed transition-all ${
                             isPositive
-                              ? 'bg-emerald-500/5 text-emerald-400 border-emerald-500/10'
-                              : 'bg-rose-500/5 text-rose-400 border-rose-500/10'
+                              ? 'bg-emerald-500/5 text-emerald-300 border-emerald-500/15'
+                              : 'bg-rose-500/5 text-rose-300 border-rose-500/15'
                           }`}
                         >
                           {isPositive ? (
-                            <TrendingUp className="w-4 h-4 shrink-0 text-emerald-500" />
+                            <ArrowUp02Icon className="w-4 h-4 shrink-0 text-emerald-400 mt-0.5" />
                           ) : (
-                            <TrendingDown className="w-4 h-4 shrink-0 text-rose-500" />
+                            <ArrowDown02Icon className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
                           )}
-                          <span>{reason}</span>
+                          <span className="font-medium">{reason}</span>
                         </div>
                       );
                     })}
                   </div>
                 ) : (
-                  <div className="flex items-center gap-2 p-3 bg-slate-950 border border-slate-900 text-slate-500 text-xs rounded-xl italic">
-                    <Info className="w-4 h-4 shrink-0" />
+                  <div className="flex items-center gap-2 p-3.5 bg-slate-950 border border-slate-800 text-slate-400 text-xs rounded-xl italic">
+                    <InformationCircleIcon className="w-4 h-4 shrink-0" />
                     <span>Explainability metrics unavailable.</span>
                   </div>
                 )}
               </div>
             </div>
           ) : (
-            <div className="bg-slate-900/20 border border-dashed border-slate-800 rounded-2xl p-12 text-center flex flex-col items-center justify-center min-h-[300px]">
-              <div className="p-3 bg-slate-900 border border-slate-800 text-slate-600 rounded-xl mb-4">
-                <Building2 className="w-6 h-6 text-emerald-500/70" />
+            <div className="bg-slate-900/20 border border-dashed border-slate-800 rounded-2xl p-12 text-center flex flex-col items-center justify-center min-h-[380px] shadow-sm">
+              <div className="p-3.5 bg-slate-900/90 border border-slate-800 text-slate-500 rounded-2xl mb-4 shadow-inner">
+                <Building02Icon className="w-7 h-7 text-emerald-400" />
               </div>
-              <h4 className="text-sm font-semibold text-slate-400">Verdicts & CBN Compliance Output</h4>
-              <p className="text-xs text-slate-600 mt-1 max-w-[220px] mx-auto">Complete the NGN credit parameters form to calculate approval probability and view SHAP risk factors.</p>
+              <h4 className="text-sm font-semibold text-slate-300 tracking-tight">Verdicts & CBN Compliance Output</h4>
+              <p className="text-xs text-slate-400 mt-1.5 max-w-[240px] mx-auto leading-relaxed">
+                Complete the NGN credit parameters form to calculate approval probability and view SHAP risk factors.
+              </p>
             </div>
           )}
         </div>
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-slate-900 py-6 bg-slate-900/10 text-center text-xs text-slate-600 mt-auto">
-        <p>© 2026 CSBank Nigeria Ltd. Licensed by Central Bank of Nigeria (CBN). NIBSS Integrated Underwriting.</p>
+      <footer className="border-t border-slate-800/60 py-6 bg-slate-950 text-center text-xs text-slate-400 mt-auto">
+        <p>© 2026 CSBank Nigeria Ltd. Licensed by Central Bank of Nigeria (CBN). NIBSS Integrated Underwriting Portal.</p>
       </footer>
     </div>
   );
 }
-
